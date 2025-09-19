@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IPG 3DS Method Helper</title>
+<style>
+  #threedsIframe {
+    width: 400px;
+    height: 300px;
+    border: 1px solid #ccc;
+  }
+  #threedsForm {
+    display: none;
+  }
+</style>
+</head>
+<body>
+  <iframe id="threedsIframe" name="threedsIframe"></iframe>
+
+  <form id="threedsForm" method="post" target="threedsIframe" novalidate></form>
+
+  <script>
+    function getQueryParams() {
+      const params = {};
+      window.location.search.substring(1).split("&").forEach(pair => {
+        const [key, value] = pair.split("=");
+        if (key) params[decodeURIComponent(key)] = decodeURIComponent(value || "");
+      });
+      return params;
+    }
+
+    (function () {
+      const params = getQueryParams();
+      const form = document.getElementById("threedsForm");
+
+      if (params.redirect_url && params.redirect_data) {
+        form.action = params.redirect_url;
+        form.innerHTML = `<input type="hidden" name="threeDSMethodData" value='${params.redirect_data}' />`;
+        form.submit();
+        console.log("IPG 3DS Method submitted to", form.action);
+      } else {
+        document.body.innerHTML = "<h3>Error: Missing redirect_url or redirect_data</h3>";
+      }
+    })();
+  </script>
+</body>
+</html>
